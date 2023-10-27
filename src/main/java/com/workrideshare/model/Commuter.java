@@ -27,6 +27,8 @@ public class Commuter {
 	@Column(unique=true)
 	private String phoneNumber;
 
+	private String type;
+
 	private String status;
 
 	@ManyToOne(fetch = FetchType.LAZY)
