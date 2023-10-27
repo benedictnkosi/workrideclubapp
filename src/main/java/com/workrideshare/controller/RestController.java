@@ -43,17 +43,28 @@ public class RestController {
 		workAddress.setState(payload.get("home_address_state"));
 		workAddress.setCountry(payload.get("home_address_country"));
 
+		if(!commuterRepository.findAllByEmail(payload.get("email")).isEmpty()){
+			String responseMessage = "We already have your details. We will find you a lift club and send you an email.";
+			String jsonResponse = "{\"message\": \"" + responseMessage + "\"}";
+			return ResponseEntity.status(HttpStatus.OK).body(jsonResponse);
+		}
+
 		advertRepository.save(homeAddress);
 		advertRepository.save(workAddress);
-		createCommuter(payload.get("name"),payload.get("email") , payload.get("phone"), "active",  homeAddress,  workAddress);
-		String responseMessage = "Commuter Created Successfully";
-		String jsonResponse = "{\"message\": \"" + responseMessage + "\"}";
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(jsonResponse);
-
+		boolean success = createCommuter(payload.get("name"),payload.get("email") , payload.get("phone"), "active",  homeAddress,  workAddress);;
+		if(success){
+			String responseMessage = "Commuter Created Successfully";
+			String jsonResponse = "{\"message\": \"" + responseMessage + "\"}";
+			return ResponseEntity.status(HttpStatus.CREATED).body(jsonResponse);
+		}else{
+			String responseMessage = "Oops! Something went wrong. Please try again later.";
+			String jsonResponse = "{\"message\": \"" + responseMessage + "\"}";
+			return ResponseEntity.status(HttpStatus.OK).body(jsonResponse);
+		}
 	}
 
-	public void createCommuter(String name, String email, String phoneNumber, String status, Address homeAddress, Address workAddress) {
+	public boolean createCommuter(String name, String email, String phoneNumber, String status, Address homeAddress, Address workAddress) {
 		Commuter commuter = new Commuter();
 		commuter.setName(name);
 		commuter.setEmail(email);
@@ -63,5 +74,6 @@ public class RestController {
 		commuter.setWorkAddress(workAddress);
 		commuter.setCreated(new Date());
 		commuterRepository.save(commuter);
+		return true;
 	}
 }

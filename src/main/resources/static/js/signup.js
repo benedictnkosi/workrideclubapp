@@ -245,9 +245,12 @@ let signup = () => {
                     window.location.href = "/thank-you";
               } else {
                   // Handle other status codes if needed
-                  showToast("Request failed with status code: " + jqXHR.status);
+                  showToast(response.message);
               }
     },
+    error: function (jqXHR, textStatus, errorThrown) {
+        showToast("Request failed with status code: " + jqXHR.status);
+    }
   });
 };
 
