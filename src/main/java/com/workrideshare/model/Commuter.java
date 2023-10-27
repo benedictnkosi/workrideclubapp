@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Commuter {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	@Column(name = "id")
 	private Integer id;
 

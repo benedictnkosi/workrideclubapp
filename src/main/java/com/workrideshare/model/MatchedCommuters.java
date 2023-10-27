@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MatchedCommuters {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private Integer id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

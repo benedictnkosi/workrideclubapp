@@ -78,6 +78,14 @@ function getHomePlacesElement(name) {
       return;
     }
 
+    if (name === "latitude") {
+          return place.geometry.location.lat();
+        }
+
+        if (name === "longitude") {
+          return place.geometry.location.lng();
+        }
+
   for (const component of place.address_components) {
     // @ts-ignore remove once typings fixed
     const componentType = component.types[0];
@@ -115,17 +123,8 @@ function getHomePlacesElement(name) {
       }
     }
 
-    if (name === "latitude") {
-      return place.geometry.location.lat();
-    }
 
-    if (name === "longitude") {
-      return place.geometry.location.lng();
-    }
   }
-
-
-
   return false;
 }
 
@@ -133,24 +132,36 @@ function getWorkPlacesElement(name) {
   // Get the place details from the autocomplete object.
   const place = workAutocomplete.getPlace();
 
+  if (address2Field.value.trim() === '') {
+      showToast("Please enter an address");
+      return;
+    }
+
+if (name === "latitude") {
+        return place.geometry.location.lat();
+      }
+
+      if (name === "longitude") {
+        return place.geometry.location.lng();
+      }
+
   for (const component of place.address_components) {
     // @ts-ignore remove once typings fixed
     const componentType = component.types[0];
 
     switch (componentType) {
-      case "locality":{
-        if (name === "city") {
+      case "locality":
+        if (name === "suburb") {
           return component.long_name;
         }
 
         break;
+       case "administrative_area_level_2": {
+               if (name === "city") {
+                 return component.long_name;
+               }
+               break;
         }
-        case "administrative_area_level_2": {
-                       if (name === "city") {
-                         return component.long_name;
-                       }
-                       break;
-                }
       case "administrative_area_level_1": {
         if (name === "state") {
           return component.short_name;
@@ -171,16 +182,11 @@ function getWorkPlacesElement(name) {
       }
     }
 
-    if (name === "latitude") {
-      return place.geometry.location.lat();
-    }
-
-    if (name === "longitude") {
-      return place.geometry.location.lng();
-    }
   }
 
-  return true;
+
+
+  return false;
 }
 
 let signup = () => {
@@ -207,10 +213,10 @@ let signup = () => {
   const home_address_lat = getHomePlacesElement("latitude");
   const home_address_long = getHomePlacesElement("longitude");
 
-  const work_address = address1Field.value;
+  const work_address = address2Field.value;
   const work_suburb = getWorkPlacesElement("suburb");
   const work_city = getWorkPlacesElement("city");
-  const work_address_lat = getWorkPlacesElement("longitude");
+  const work_address_lat = getWorkPlacesElement("latitude");
   const work_address_long = getWorkPlacesElement("longitude");
 
   let url = "/api/commuter/new";
